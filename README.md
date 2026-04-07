@@ -6,7 +6,7 @@ A lightweight macOS menu bar app that gives you quick access to essential system
 
 ## Download
 
-[⬇️ Download QuickBar.dmg](https://github.com/hamza-siddiq/QuickBar/releases)
+[Download QuickBar.dmg](https://github.com/hamza-siddiq/QuickBar/releases)
 
 ## Features
 

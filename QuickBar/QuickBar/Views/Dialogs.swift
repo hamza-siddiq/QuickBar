@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PasswordPromptView: View {
     @State private var password: String = ""
+    @FocusState private var isPasswordFocused: Bool
     let onConfirm: (String) -> Void
     let onCancel: () -> Void
 
@@ -17,6 +18,7 @@ struct PasswordPromptView: View {
             SecureField("Password", text: $password)
                 .textFieldStyle(.roundedBorder)
                 .frame(width: 240)
+                .focused($isPasswordFocused)
                 .onSubmit {
                     guard !password.isEmpty else { return }
                     onConfirm(password)
@@ -38,6 +40,11 @@ struct PasswordPromptView: View {
         }
         .padding()
         .frame(width: 280)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                isPasswordFocused = true
+            }
+        }
     }
 }
 
