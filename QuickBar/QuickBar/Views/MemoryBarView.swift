@@ -1,41 +1,64 @@
 import SwiftUI
 
-struct MemoryBarView: View {
+struct SystemBarView: View {
+    let label: String
     let used: Double
     let total: Double
-    let purgeable: Double
+    let extra: String?
     let percent: Double
 
+    init(label: String, used: Double, total: Double, percent: Double, extra: String? = nil) {
+        self.label = label
+        self.used = used
+        self.total = total
+        self.percent = percent
+        self.extra = extra
+    }
+
+    private var barColors: [Color] {
+        if percent < 60 {
+            return [.green, .green.opacity(0.8)]
+        } else if percent < 80 {
+            return [.yellow, .orange]
+        } else {
+            return [.orange, .red]
+        }
+    }
+
     var body: some View {
-        VStack(spacing: 5) {
+        VStack(spacing: 4) {
             HStack {
-                Text("\(used, specifier: "%.1f") / \(total, specifier: "%.1f") GB")
-                    .font(.system(size: 10))
-                    .foregroundColor(.secondary)
+                Text(label)
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(.secondary.opacity(0.8))
 
                 Spacer()
 
-                if purgeable > 0.5 {
-                    Text("~\(purgeable, specifier: "%.1f") GB can be freed")
-                        .font(.system(size: 9))
-                        .foregroundColor(.secondary)
+                Text("\(used, specifier: "%.1f") / \(total, specifier: "%.0f") GB")
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(.secondary)
+
+                if let extra {
+                    Text(extra)
+                        .font(.system(size: 8))
+                        .foregroundColor(.secondary.opacity(0.6))
                 }
             }
 
             GeometryReader { geometry in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(.secondary.opacity(0.12))
+                        .fill(.secondary.opacity(0.10))
 
                     Capsule()
                         .fill(
                             LinearGradient(
-                                colors: [.blue, .purple],
+                                colors: barColors,
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
                         )
-                        .frame(width: geometry.size.width * CGFloat(min(percent, 100) / 100))
+                        .frame(width: max(0, geometry.size.width * CGFloat(min(percent, 100) / 100)))
                 }
             }
             .frame(height: 4)
